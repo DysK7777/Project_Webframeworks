@@ -62,6 +62,7 @@ export const ShowCars = () => {
                 >
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalWindow}>
+                            <Text style={styles.modalHeader}>{`${selectedCar.Heart}`}</Text>
                             <Text style={styles.modalHeader}>{`${selectedCar.name}`}</Text>
                             <Text style={styles.modalText}>Year: {selectedCar.year}</Text>
                             <Text style={styles.modalText}>Type: {selectedCar.type}</Text>
@@ -81,7 +82,7 @@ export const ShowCars = () => {
                                 onPress={() => pressLiked(selectedCar)} // Toggle heart color
                                 style={styles.heartButton}
                             >
-                                <Text style={[styles.heart, { color: selectedCar ? 'red' : 'black' }]}>
+                                <Text style={[styles.heart, { color: selectedCar.Heart ? 'red' : 'black' }]}>
                                     ♥
                                 </Text>
                             </Pressable>
