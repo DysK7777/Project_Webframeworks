@@ -30,12 +30,12 @@ export const ShowCars = () => {
         setLoading(false)
     }, []);
 
-    const pressLiked = (car:CarModel) => {
+    const pressLiked = (car: CarModel) => {
         setLiked(!liked)
-        if(liked) setLikedCarModels([...likedCarModels,{Car:car,Heart:true}])
+        if (liked) setLikedCarModels([...likedCarModels, { Car: car, Heart: true }])
     }
 
-//...prev, { car, liked: true }
+    //...prev, { car, liked: true }
     return (
         <View style={styles.paddingTop}>
             {loading && <Text>Chill, give me a break!</Text>}
@@ -62,7 +62,7 @@ export const ShowCars = () => {
                 >
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalWindow}>
-                            <Text style={styles.modalHeader}>{`${selectedCar.name} ${<Pressable><AntDesign name="heart" size={24} color="red" /></Pressable>}`}</Text>
+                            <Text style={styles.modalHeader}>{`${selectedCar.name}`}</Text>
                             <Text style={styles.modalText}>Year: {selectedCar.year}</Text>
                             <Text style={styles.modalText}>Type: {selectedCar.type}</Text>
                             <Text style={styles.modalText}>Fuel Type: {selectedCar.fuel_type}</Text>
@@ -99,69 +99,69 @@ export const ShowCars = () => {
     )
 }
 const styles = StyleSheet.create({
-    
-    paddingTop:{
-      marginTop:50
+
+    paddingTop: {
+        marginTop: 50
     },
-    carModels:{
-      fontWeight:"bold",
-      fontSize:20
+    carModels: {
+        fontWeight: "bold",
+        fontSize: 20
     },
-    
+
     listItem: {
-      padding: 15,
-      backgroundColor: '#fff',
-      marginBottom: 10,
-      borderRadius: 5,
-      elevation: 3,
+        padding: 15,
+        backgroundColor: '#fff',
+        marginBottom: 10,
+        borderRadius: 5,
+        elevation: 3,
     },
     carName: {
-      fontSize: 16,
-      color: '#333',
+        fontSize: 16,
+        color: '#333',
     },
     modalOverlay: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dimmed overlay
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dimmed overlay
     },
     modalWindow: {
-      width: '90%',
-      padding: 20,
-      backgroundColor: '#fff',
-      borderRadius: 10,
-      alignItems: 'center',
-      elevation: 5,
+        width: '90%',
+        padding: 20,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        alignItems: 'center',
+        elevation: 5,
     },
     modalHeader: {
-      fontSize: 22,
-      fontWeight: 'bold',
-      marginBottom: 15,
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 15,
     },
     modalText: {
-      fontSize: 16,
-      marginBottom: 10,
-      color: '#333',
+        fontSize: 16,
+        marginBottom: 10,
+        color: '#333',
     },
     button: {
-      backgroundColor: '#6200ee',
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 5,
-      marginTop: 20,
+        backgroundColor: '#6200ee',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop: 20,
     },
     closeButton: {
-      backgroundColor: '#e53935',
+        backgroundColor: '#e53935',
     },
     buttonText: {
-      color: '#fff',
-      fontSize: 16,
+        color: '#fff',
+        fontSize: 16,
     },
     heartButton: {
-      marginTop: 20,
+        marginTop: 20,
     },
     heart: {
-      fontSize: 30,
-      fontWeight: 'bold',
+        fontSize: 30,
+        fontWeight: 'bold',
     },
-  });
+});
