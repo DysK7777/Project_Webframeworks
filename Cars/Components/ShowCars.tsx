@@ -1,8 +1,9 @@
-import { CarModel, CarModelHeart } from "@/types";
+import { styles } from "@/styles/style";
+import { CarModel } from "@/types";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useState, useEffect } from "react";
 import { View, Text, FlatList, Pressable, Modal, StyleSheet, TextInput } from "react-native";
-import { SearchCar } from "./SearchCar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4
 export const ShowCars = () => {
 
@@ -29,11 +30,12 @@ export const ShowCars = () => {
             } finally {
                 setLoading(false);
             }
+            //await AsyncStorage.setItem("FavoriteCars",)
         };
 
         fetchCarModels();
         setLoading(false)
-    }, []);
+    }, );
 
     const pressLiked = (selectedCar: CarModel) => {
         selectedCar.Heart = !selectedCar.Heart;
@@ -52,14 +54,15 @@ export const ShowCars = () => {
     }
     //...prev, { car, liked: true }
     return (
-        <View style={styles.paddingTop}>
+        <View style={styles.paddingTop}
+        >
             {loading && <Text>Chill, give me a break!</Text>}
             <Text style={styles.carModels}>Car Models</Text>
             <View>
                 <TextInput
                     style={styles.input}
                     placeholder="Audi.."
-                    onChange={()=>changedSearch}
+                    onChange={() => changedSearch}
                 />
 
                 {searchTerm != "" ?
@@ -76,23 +79,23 @@ export const ShowCars = () => {
                         )}
 
                     />
-                :
-                <FlatList
-                data={carModels}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <Pressable
-                        style={styles.listItem}
-                        onPress={() => setSelectedCar(item)}
-                    >
-                        <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
-                    </Pressable>
-                )}
+                    :
+                    <FlatList
+                        data={carModels}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                            <Pressable
+                                style={styles.listItem}
+                                onPress={() => setSelectedCar(item)}
+                            >
+                                <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
+                            </Pressable>
+                        )}
 
-            />}
+                    />}
             </View>
-            
-            
+
+
             {selectedCar && (
                 <Modal
                     animationType="slide"
@@ -142,81 +145,3 @@ export const ShowCars = () => {
         </View>
     )
 }
-const styles = StyleSheet.create({
-    input: {
-        marginTop:10,
-        padding: 10,
-        fontSize: 16,
-        marginBottom: 20,
-        width: 300,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 5,
-        backgroundColor: '#fff',
-    },
-    paddingTop: {
-        marginTop: 50
-    },
-    carModels: {
-        marginTop:50,
-        fontWeight: "bold",
-        fontSize: 20
-    },
-
-    listItem: {
-        padding: 15,
-        backgroundColor: '#fff',
-        marginBottom: 10,
-        borderRadius: 5,
-        elevation: 3,
-    },
-    carName: {
-        fontSize: 16,
-        color: '#333',
-    },
-    modalOverlay: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dimmed overlay
-    },
-    modalWindow: {
-        width: '90%',
-        padding: 20,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        alignItems: 'center',
-        elevation: 5,
-    },
-    modalHeader: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 15,
-    },
-    modalText: {
-        fontSize: 16,
-        marginBottom: 10,
-        color: '#333',
-    },
-    button: {
-        backgroundColor: '#6200ee',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        marginTop: 20,
-    },
-    closeButton: {
-        backgroundColor: '#e53935',
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    heartButton: {
-        marginTop: 20,
-    },
-    heart: {
-        fontSize: 30,
-        fontWeight: 'bold',
-    },
-});

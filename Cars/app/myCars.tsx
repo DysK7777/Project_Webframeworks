@@ -1,3 +1,5 @@
+import { FavoriteCars } from "@/Components/FavoriteCars";
+import { styles } from "@/styles/style";
 import { Stack } from "expo-router";
 import { Text, View } from "react-native";
 
@@ -11,7 +13,8 @@ const myCars = () => {
             }}
         >
             <Stack.Screen options={{title: "Favorite Cars"}}></Stack.Screen>
-            <Text>Edit app/index.tsx to edit this screen.</Text>
+            <Text style={styles.stickyText}>All your favorite cars!</Text>
+            {/* <FavoriteCars /> */}
         </View>
     );
 }

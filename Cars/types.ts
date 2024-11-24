@@ -12,7 +12,3 @@ export interface CarModel {
     seating_capacity: number;
     Heart?:Boolean
   }
-export interface CarModelHeart {
-    Car:CarModel,
-    Heart:boolean
-}
