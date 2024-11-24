@@ -1,9 +1,12 @@
 import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
+    body: {
+
+    },
 
     stickyText: {
         paddingTop: 32,
-        position: 'absolute',
+        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
@@ -40,7 +43,7 @@ export const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginBottom: 10,
         borderRadius: 5,
-        elevation: 3,
+        elevation: 3
     },
     carName: {
         fontSize: 16,

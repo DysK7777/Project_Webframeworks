@@ -28,7 +28,7 @@ const addCar = () => {
     });
 
 
-    const handleInputChange = (field, value) => {
+    const handleInputChange = (field : string, value : string) => {
         setCar({ ...car, [field]: value });
     };
 

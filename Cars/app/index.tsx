@@ -12,6 +12,7 @@ const index = () => {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        overflowY: "scroll"
       }}
     >
       <Stack.Screen options={{ title: "home" }}></Stack.Screen>

@@ -35,7 +35,7 @@ export const ShowCars = () => {
 
         fetchCarModels();
         setLoading(false)
-    }, );
+    },);
 
     const pressLiked = (selectedCar: CarModel) => {
         selectedCar.Heart = !selectedCar.Heart;
