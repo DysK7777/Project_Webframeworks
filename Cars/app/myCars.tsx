@@ -10,7 +10,7 @@ const myCars = () => {
                 alignItems: "center",
             }}
         >
-            <Stack.Screen options={{title: "myCars"}}></Stack.Screen>
+            <Stack.Screen options={{title: "Favorite Cars"}}></Stack.Screen>
             <Text>Edit app/index.tsx to edit this screen.</Text>
         </View>
     );

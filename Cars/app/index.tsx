@@ -1,13 +1,9 @@
-import { CarModel, CarModelHeart } from "@/types";
 import { Stack } from "expo-router";
-import { useState, useEffect } from "react";
-import { FlatList, Text, View, StyleSheet, Pressable, Modal } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Text, View, StyleSheet } from "react-native";
 import { ShowCars } from "@/Components/ShowCars";
 
 
-const Index = () => {
+const index = () => {
   return (
     
     <View
@@ -17,7 +13,7 @@ const Index = () => {
         alignItems: "center",
       }}
     >
-      <Stack.Screen options={{title: "index"}}></Stack.Screen>
+      <Stack.Screen options={{title: "home"}}></Stack.Screen>
       <Text style={styles.stickyText}>Feel free to look at any car!</Text>
       <ShowCars/>
       
@@ -27,6 +23,7 @@ const Index = () => {
 const styles = StyleSheet.create({
   
   stickyText: {
+    paddingTop:32,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -40,4 +37,4 @@ const styles = StyleSheet.create({
     zIndex: 10, // Ensures it stays on top of other components
   },
 });
-export default Index;
+export default index;

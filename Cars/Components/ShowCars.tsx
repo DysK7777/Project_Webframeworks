@@ -1,15 +1,16 @@
 import { CarModel, CarModelHeart } from "@/types";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useState, useEffect } from "react";
-import { View, Text, FlatList, Pressable, Modal, StyleSheet } from "react-native";
-
+import { View, Text, FlatList, Pressable, Modal, StyleSheet, TextInput } from "react-native";
+import { SearchCar } from "./SearchCar";
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4
 export const ShowCars = () => {
 
     const [carModels, setCarModels] = useState<CarModel[]>([]);
-    const [likedCarModels, setLikedCarModels] = useState<CarModelHeart[]>([]);
+    const [filteredCars, setFilteredCars] = useState<CarModel[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedCar, setSelectedCar] = useState<CarModel | null>(null);
-    const [liked, setLiked] = useState(false);
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
     useEffect(() => {
         setLoading(true)
@@ -18,6 +19,10 @@ export const ShowCars = () => {
             try {
                 const response = await fetch('https://sampleapis.assimilate.be/car/models');
                 const data: CarModel[] = await response.json();
+                data.forEach(car => {
+                    if (car.Heart == undefined)
+                        car.Heart = false
+                });
                 setCarModels(data);
             } catch (e) {
                 console.error(e)
@@ -30,17 +35,49 @@ export const ShowCars = () => {
         setLoading(false)
     }, []);
 
-    const pressLiked = (car: CarModel) => {
-        setLiked(!liked)
-        if (liked) setLikedCarModels([...likedCarModels, { Car: car, Heart: true }])
+    const pressLiked = (selectedCar: CarModel) => {
+        selectedCar.Heart = !selectedCar.Heart;
+        setCarModels(
+            carModels.map((car) =>
+                car.id === selectedCar.id
+                    ? { ...car, Heart: selectedCar.Heart } // Toggle Heart for the selected car
+                    : { ...car, Heart: car.Heart } // Ensure others have Heart set to false
+            )
+        );
     }
-
+    const changedSearch: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+        setSearchTerm(e.target.value);
+        setFilteredCars(carModels.filter((car) => car.name.toLowerCase().includes(searchTerm.toLowerCase())));
+        console.log(filteredCars)
+    }
     //...prev, { car, liked: true }
     return (
         <View style={styles.paddingTop}>
             {loading && <Text>Chill, give me a break!</Text>}
             <Text style={styles.carModels}>Car Models</Text>
-            <FlatList
+            <View>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Audi.."
+                    onChange={()=>changedSearch}
+                />
+
+                {searchTerm != "" ?
+                    <FlatList
+                        data={filteredCars}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                            <Pressable
+                                style={styles.listItem}
+                                onPress={() => setSelectedCar(item)}
+                            >
+                                <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
+                            </Pressable>
+                        )}
+
+                    />
+                :
+                <FlatList
                 data={carModels}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
@@ -52,7 +89,10 @@ export const ShowCars = () => {
                     </Pressable>
                 )}
 
-            />
+            />}
+            </View>
+            
+            
             {selectedCar && (
                 <Modal
                     animationType="slide"
@@ -62,7 +102,6 @@ export const ShowCars = () => {
                 >
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalWindow}>
-                            <Text style={styles.modalHeader}>{`${selectedCar.Heart}`}</Text>
                             <Text style={styles.modalHeader}>{`${selectedCar.name}`}</Text>
                             <Text style={styles.modalText}>Year: {selectedCar.year}</Text>
                             <Text style={styles.modalText}>Type: {selectedCar.type}</Text>
@@ -79,12 +118,16 @@ export const ShowCars = () => {
                                 Seating Capacity: {selectedCar.seating_capacity}
                             </Text>
                             <Pressable
-                                onPress={() => pressLiked(selectedCar)} // Toggle heart color
+                                onPress={() => {
+                                    pressLiked(selectedCar);
+                                }}
                                 style={styles.heartButton}
                             >
-                                <Text style={[styles.heart, { color: selectedCar.Heart ? 'red' : 'black' }]}>
-                                    ♥
-                                </Text>
+
+                                {selectedCar.Heart ? <AntDesign name="heart" size={24} color="red" /> :
+                                    <AntDesign name="hearto" size={24} color="black" />
+                                }
+
                             </Pressable>
                             <Pressable
                                 style={[styles.button, styles.closeButton]}
@@ -100,11 +143,22 @@ export const ShowCars = () => {
     )
 }
 const styles = StyleSheet.create({
-
+    input: {
+        marginTop:10,
+        padding: 10,
+        fontSize: 16,
+        marginBottom: 20,
+        width: 300,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 5,
+        backgroundColor: '#fff',
+    },
     paddingTop: {
         marginTop: 50
     },
     carModels: {
+        marginTop:50,
         fontWeight: "bold",
         fontSize: 20
     },

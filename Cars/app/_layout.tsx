@@ -11,8 +11,8 @@ const RootLayout = () => {
         // Name of the dynamic route.
         name="index"
         options={{
-          
-          title: 'Home',
+          headerShown: false,
+          title: 'index',
           tabBarIcon: ({ focused, color }) => (
             <AntDesign name="home"
               size={24}
@@ -24,6 +24,7 @@ const RootLayout = () => {
         // Name of the dynamic route.
         name="addCar"
         options={{
+          headerShown: false,
           title: 'Add a car',
           tabBarIcon: ({focused,color}) => (
             <Ionicons name="car-outline"
@@ -36,8 +37,9 @@ const RootLayout = () => {
         // Name of the dynamic route.
         name="myCars"
         options={{
+          headerShown: false,
           title: 'My cars',
-          tabBarIcon: ({color,focused}) => (
+          tabBarIcon: ({focused,color}) => (
           <Entypo name="star-outlined" 
             size={24} 
             color={focused ? 'black' : 'grey'}
