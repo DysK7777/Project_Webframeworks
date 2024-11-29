@@ -57,13 +57,11 @@ const addCar = () => {
             return;
         }
         const idNumber = carModels.length + 1;
-        // setCar({ ...car, id=idNumber });
-        // Save or process the data as needed
-        const headers = { 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4' };
-        const baseURL = "https://sampleapis.assimilate.be/car/models";
+        setCar({...car,id:idNumber})
         fetch("https://sampleapis.assimilate.be/car/models", {
             method: "POST",
             headers: {
+                'Content-Type': 'application.json',
                 'authorization': "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4"
             },
             body: JSON.stringify(car)
