@@ -4,6 +4,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useState, useEffect } from "react";
 import { View, Text, FlatList, Pressable, Modal, StyleSheet, TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4
 export const ShowCars = () => {
 
@@ -12,13 +13,17 @@ export const ShowCars = () => {
     const [loading, setLoading] = useState(true);
     const [selectedCar, setSelectedCar] = useState<CarModel | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
-
+    const [refreshing, setRefreshing] = useState<boolean>(false);
+    
+    
     useEffect(() => {
         setLoading(true)
         // Fetch the car models data
+        const headers = { 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4' };
+        const baseURL = "https://sampleapis.assimilate.be/car/models";
         const fetchCarModels = async () => {
             try {
-                const response = await fetch('https://sampleapis.assimilate.be/car/models');
+                const response = await fetch(`${baseURL}?name.first=Bender`, {headers});
                 const data: CarModel[] = await response.json();
                 data.forEach(car => {
                     if (car.Heart == undefined)
@@ -35,8 +40,13 @@ export const ShowCars = () => {
 
         fetchCarModels();
         setLoading(false)
-    },);
-
+    },[refreshing]);
+    const refresh = async() => {
+        setRefreshing(true);
+        // wait 2 seconds to simulate API call (or whatever)
+        await new Promise((resolve, reject) => setTimeout(resolve, 2000));
+        setRefreshing(false);
+    }
     const pressLiked = (selectedCar: CarModel) => {
         selectedCar.Heart = !selectedCar.Heart;
         setCarModels(
@@ -62,13 +72,15 @@ export const ShowCars = () => {
                 <TextInput
                     style={styles.input}
                     placeholder="Audi.."
-                    onChange={() => changedSearch}
+                    onChangeText={() => changedSearch}
                 />
 
-                {searchTerm != "" ?
+                {searchTerm != '' ?
                     <FlatList
                         data={filteredCars}
                         keyExtractor={(item) => item.id.toString()}
+                        refreshing={refreshing}
+                        onRefresh={()=>refresh}
                         renderItem={({ item }) => (
                             <Pressable
                                 style={styles.listItem}
@@ -83,6 +95,8 @@ export const ShowCars = () => {
                     <FlatList
                         data={carModels}
                         keyExtractor={(item) => item.id.toString()}
+                        refreshing={refreshing}
+                        onRefresh={()=>refresh}
                         renderItem={({ item }) => (
                             <Pressable
                                 style={styles.listItem}
@@ -93,6 +107,8 @@ export const ShowCars = () => {
                         )}
 
                     />}
+
+
             </View>
 
 

@@ -1,51 +1,87 @@
 import { styles } from "@/styles/style";
+import { CarModel } from "@/types";
 import { Stack } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, Button, ScrollView, Text, TextInput, View } from "react-native";
 
 const addCar = () => {
-    // const [name, setName] = useState<string>("");
-    // const [brand_id, setBrand_id] = useState<number>(0);
-    // const [type, setType] = useState<string>("");
-    // const [year, setYear] = useState<number>(0);
-    // const [fuel_type, setFuel_type] = useState<string>("");
-    // const [top_speed_kmh, setTop_speed_kmh] = useState<number>(0);
-    // const [acceleration_0_to_100_kmh, setAcceleration_0_to_100_kmh] = useState<number>(0);
-    // const [horsepower, setHorsepower] = useState<number>(0);
-    // const [transmission, setTransmission] = useState<string>("");
-    // const [seating_capacity, setSeating_capacity] = useState<number>(0);
-    const [car, setCar] = useState({
+    const [carModels, setCarModels] = useState<CarModel[]>([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        setLoading(true)
+        // Fetch the car models data
+        const headers = { 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4' };
+        const baseURL = "https://sampleapis.assimilate.be/car/models";
+        const fetchCarModels = async () => {
+            try {
+                const response = await fetch(`${baseURL}?name.first=Bender`, { headers });
+                const data: CarModel[] = await response.json();
+                data.forEach(car => {
+                    if (car.Heart == undefined)
+                        car.Heart = false
+                });
+                setCarModels(data);
+            } catch (e) {
+                console.error(e)
+            } finally {
+                setLoading(false);
+            }
+            //await AsyncStorage.setItem("FavoriteCars",)
+        };
+
+        fetchCarModels();
+        setLoading(false)
+    }, []);
+    const [car, setCar] = useState<CarModel>({
+        id: 0,
         name: '',
-        brand_id: '',
+        brand_id: 0,
         type: '',
-        year: '',
+        year: 0,
         fuel_type: '',
-        top_speed_kmh: '',
-        acceleration_0_to_100_kmh: '',
-        horsepower: '',
+        top_speed_kmh: 0,
+        acceleration_0_to_100_kmh: 0,
+        horsepower: 0,
         transmission: '',
-        seating_capacity: '',
+        seating_capacity: 0,
     });
 
 
-    const handleInputChange = (field : string, value : string) => {
+    const handleInputChange = (field: string, value: string) => {
         setCar({ ...car, [field]: value });
     };
-
     const handleSubmit = () => {
         // Example validation
         if (!car.name || !car.type || !car.year) {
             Alert.alert('Validation Error', 'Please fill in all required fields');
             return;
         }
-
-        Alert.alert('Car Saved', `Car details:\n${JSON.stringify(car, null, 2)}`);
+        const idNumber = carModels.length + 1;
+        // setCar({ ...car, id=idNumber });
         // Save or process the data as needed
+        const headers = { 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4' };
+        const baseURL = "https://sampleapis.assimilate.be/car/models";
+        fetch("https://sampleapis.assimilate.be/car/models", {
+            method: "POST",
+            headers: {
+                'authorization': "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4"
+            },
+            body: JSON.stringify(car)
+        }
+        ).then((response) => response.json())
+            .then((data) => {
+                setCarModels([...carModels, car])
+                Alert.alert('Car Saved', `${car.name} (${car.year})`);
+                console.log(data)
+            })
+            .catch((error) => {
+                console.error(error);
+            })
     };
     return (
         <View
             style={{
-                paddingTop:20,
+                paddingTop: 20,
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
@@ -55,7 +91,7 @@ const addCar = () => {
             <Text style={styles.stickyText}>Feel free to add your own car model</Text>
             <Text style={styles.carModels}>Enter Car Details</Text>
             <ScrollView contentContainerStyle={styles.container}>
-                
+
 
                 <Text style={styles.label}>Name *</Text>
                 <TextInput
