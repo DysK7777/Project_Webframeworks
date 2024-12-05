@@ -1,57 +1,143 @@
 import { styles } from "@/styles/style";
 import { CarModel } from "@/types";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useEffect, useState, useContext } from "react";
+import { FlatList, Pressable, View, Text, TextInput, Modal } from "react-native";
+import { FavoriteCarsContext } from "../Context/FavoriteCarsContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
-import { FlatList, Pressable, View, Text } from "react-native";
-interface FavoriteCarProps {
-    cars: CarModel[],
-    setSelectedCar: React.Dispatch<React.SetStateAction<CarModel>>
-}
-export const FavoriteCars = ({ cars, setSelectedCar }: FavoriteCarProps) => {
+
+export const FavoriteCars = () => {
+    const { favoriteCars, refreshFavoriteCars } = useContext(FavoriteCarsContext);
 
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState<boolean>(false);
-    const [favoriteCars, setFavoriteCars] = useState<CarModel[]>([]);
-    useEffect(() => {
-        setLoading(true)
-        const fetchCarModels = async () => {
-            try {
-                const value = await AsyncStorage.getItem("FavoriteCars");
-                setFavoriteCars(value ? JSON.parse(value) : []);
-            } catch (e) {
-                console.error(e)
-            } finally {
-                setLoading(false);
-            }
-            //await AsyncStorage.setItem("FavoriteCars",)
-        };
+    const [selectedCar, setSelectedCar] = useState<CarModel | null>(null);
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
-        fetchCarModels();
-        setLoading(false)
-    }, [refreshing]);
-    const refresh = async () => {
-        setRefreshing(true);
-        // wait 2 seconds to simulate API call (or whatever)
-        await new Promise((resolve, reject) => setTimeout(resolve, 2000));
-        setRefreshing(false);
-    }
+    const [filteredCars, setFilteredCars] = useState<CarModel[]>([]);
+
+
+    // const toggleHeart = async (selectedCar: CarModel) => {
+    //     selectedCar.Heart = !selectedCar.Heart;
+    //     favoriteCars.map((car) =>
+    //         car.id === selectedCar.id
+    //             ? { ...car, Heart: selectedCar.Heart }
+    //             : { ...car, Heart: car.Heart }
+    //     );
+
+    //     try {
+    //         const favoriteCars = await AsyncStorage.getItem("FavoriteCars");
+    //         let favoriteCarsArray: CarModel[] = favoriteCars ? JSON.parse(favoriteCars) : [];
+
+    //         if (selectedCar.Heart) {
+    //             if (!favoriteCarsArray.some((car) => car.id === selectedCar.id)) {
+    //                 favoriteCarsArray.push(selectedCar);
+    //             }
+    //         } else {
+    //             favoriteCarsArray = favoriteCarsArray.filter((car: CarModel) => car.id !== selectedCar.id);
+    //         }
+
+    //         await AsyncStorage.setItem("FavoriteCars", JSON.stringify(favoriteCarsArray));
+    //         refreshFavoriteCars(); // Refresh favorite cars list
+    //         setRefreshing(true); // Trigger refresh
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // };
+
     return (
-        <View>
-            <FlatList
-                data={cars}
-                keyExtractor={(item) => item.id.toString()}
-                refreshing={refreshing}
-                onRefresh={() => refresh}
-                renderItem={({ item }) => (
-                    <Pressable
-                        style={styles.listItem}
-                        onPress={() => setSelectedCar(item)}
-                    >
-                        <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
-                    </Pressable>
-                )}
+        <View style={styles.paddingTop}>
+            {loading && <Text>Chill, give me a break!</Text>}
+            <Text style={styles.carModels}>Lovely cars</Text>
+            <View>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Audi.."
+                    onChangeText={(text) => {
+                        setSearchTerm(text);
+                        const filtered = favoriteCars.filter((car) =>
+                            car.name.toLowerCase().includes(text.toLowerCase())
+                        );
+                        setFilteredCars(filtered);
+                    }}
+                />
+                {/* {searchTerm ? */}
+                    <FlatList
+                        data={favoriteCars}
+                        keyExtractor={(item) => item.id.toString()}
+                        refreshing={refreshing}
+                        onRefresh={() => refreshing}
+                        renderItem={({ item }) => (
+                            <Pressable
+                                style={styles.listItem}
+                                onPress={() => setSelectedCar(item)}
+                            >
+                                <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
+                            </Pressable>
+                        )}
 
-            />
+                    /> 
+                    {/* :
+                    <FlatList
+                        data={favoriteCars}
+                        keyExtractor={(item) => item.id.toString()}
+                        refreshing={refreshing}
+                        onRefresh={() => refresh}
+                        renderItem={({ item }) => (
+                            <Pressable
+                                style={styles.listItem}
+                                onPress={() => setSelectedCar(item)}
+                            >
+                                <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
+                            </Pressable>
+                        )}
+
+                    />
+                } */}
+                {selectedCar && (
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={!!selectedCar}
+                        onRequestClose={() => setSelectedCar(null)}
+                    >
+                        <View style={styles.modalOverlay}>
+                            <View style={styles.modalWindow}>
+                                <Text style={styles.modalHeader}>{`${selectedCar.name}`}</Text>
+                                <Text style={styles.modalText}>Year: {selectedCar.year}</Text>
+                                <Text style={styles.modalText}>Type: {selectedCar.type}</Text>
+                                <Text style={styles.modalText}>Fuel Type: {selectedCar.fuel_type}</Text>
+                                <Text style={styles.modalText}>Top Speed: {selectedCar.top_speed_kmh} km/h</Text>
+                                <Text style={styles.modalText}>
+                                    Acceleration (0-100): {selectedCar.acceleration_0_to_100_kmh}s
+                                </Text>
+                                <Text style={styles.modalText}>Horsepower: {selectedCar.horsepower}</Text>
+                                <Text style={styles.modalText}>
+                                    Transmission: {selectedCar.transmission}
+                                </Text>
+                                <Text style={styles.modalText}>
+                                    Seating Capacity: {selectedCar.seating_capacity}
+                                </Text>
+                                <Pressable
+                                    // onPress={() => {
+                                    //     toggleHeart(selectedCar);
+                                    // }}
+                                    style={styles.heartButton}
+                                >
+                                    {selectedCar.Heart ? <AntDesign name="heart" size={24} color="red" /> :
+                                        <AntDesign name="hearto" size={24} color="black" />
+                                    }
+                                </Pressable>
+                                <Pressable
+                                    style={[styles.button, styles.closeButton]}
+                                    onPress={() => setSelectedCar(null)}
+                                >
+                                    <Text style={styles.buttonText}>Close</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </Modal>)}
+            </View>
         </View>
     )
 }

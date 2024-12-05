@@ -12,9 +12,9 @@ const myCars = () => {
                 alignItems: "center",
             }}
         >
-            <Stack.Screen options={{title: "Favorite Cars"}}></Stack.Screen>
+            <Stack.Screen options={{ title: "Favorite Cars" }}></Stack.Screen>
             <Text style={styles.stickyText}>All your favorite cars!</Text>
-            {/* <FavoriteCars /> */}
+            <FavoriteCars />
         </View>
     );
 }
