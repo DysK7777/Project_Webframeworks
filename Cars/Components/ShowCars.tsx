@@ -4,11 +4,9 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useState, useEffect, useContext } from "react";
 import { View, Text, FlatList, Pressable, Modal, StyleSheet, TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FavoriteCarsContext } from "../Context/FavoriteCarsContext";
-
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4
 export const ShowCars = () => {
-    const { favoriteCars, setFavoriteCars, refreshFavoriteCars } = useContext(FavoriteCarsContext);
+    // const { favoriteCars, setFavoriteCars, refreshFavoriteCars } = useContext(FavoriteCarsContext);
 
     const [carModels, setCarModels] = useState<CarModel[]>([]);
     const [filteredCars, setFilteredCars] = useState<CarModel[]>([]);
@@ -17,14 +15,24 @@ export const ShowCars = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [refreshing, setRefreshing] = useState<boolean>(false);
 
-    const clearStorage = async () => {
+    const refreshFavoriteCars = async () => {
         try {
-            await AsyncStorage.clear();
-            console.log("AsyncStorage cleared");
+            const value = await AsyncStorage.getItem('FavoriteCars');
+            const cars = value ? JSON.parse(value) : [];
+            console.log('Updated favorite cars:', cars); // Log all cars
         } catch (e) {
             console.error(e);
         }
     };
+
+    // const clearStorage = async () => {
+    //     try {
+    //         await AsyncStorage.clear();
+    //         console.log("AsyncStorage cleared");
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // };
 
     useEffect(() => {
         setLoading(true);
@@ -59,6 +67,7 @@ export const ShowCars = () => {
         await new Promise((resolve, reject) => setTimeout(resolve, 2000));
         setRefreshing(false);
     }
+
     const pressLiked = async (selectedCar: CarModel) => {
         selectedCar.Heart = !selectedCar.Heart;
         setCarModels(
@@ -70,18 +79,17 @@ export const ShowCars = () => {
         );
 
         try {
-            const favoriteCarss = await AsyncStorage.getItem("FavoriteCars");
-            let favoriteCarsArray: CarModel[] = favoriteCarss ? JSON.parse(favoriteCarss) : [];
+            const favoriteCars = await AsyncStorage.getItem("FavoriteCars");
+            let favoriteCarsArray: CarModel[] = favoriteCars ? JSON.parse(favoriteCars) : [];
 
             if (selectedCar.Heart) {
                 if (!favoriteCarsArray.some((car) => car.id === selectedCar.id)) {
                     favoriteCarsArray.push(selectedCar);
-                    setFavoriteCars([...favoriteCarsArray]); // Update context
-                    console.log(favoriteCars);
+                    console.log('Favorite cars after adding:', favoriteCarsArray); // Debug log
                 }
             } else {
                 favoriteCarsArray = favoriteCarsArray.filter((car: CarModel) => car.id !== selectedCar.id);
-                setFavoriteCars([...favoriteCarsArray]); // Update context
+                console.log('Favorite cars after removing:', favoriteCarsArray); // Debug log
             }
 
             await AsyncStorage.setItem("FavoriteCars", JSON.stringify(favoriteCarsArray));
@@ -95,7 +103,7 @@ export const ShowCars = () => {
     return (
         <View style={styles.paddingTop}
         >
-            
+
             {loading && <Text>Chill, give me a break!</Text>}
             <Text style={styles.carModels}>Car Models</Text>
             <View>
@@ -152,7 +160,7 @@ export const ShowCars = () => {
 
             </View>
 
-            
+
 
             {selectedCar && (
                 <Modal

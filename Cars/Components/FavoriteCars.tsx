@@ -1,49 +1,32 @@
 import { styles } from "@/styles/style";
 import { CarModel } from "@/types";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, Pressable, View, Text, TextInput, Modal } from "react-native";
-import { FavoriteCarsContext } from "../Context/FavoriteCarsContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const FavoriteCars = () => {
-    const { favoriteCars, refreshFavoriteCars } = useContext(FavoriteCarsContext);
-
+    const [favoriteCars, setFavoriteCars] = useState<CarModel[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState<boolean>(false);
     const [selectedCar, setSelectedCar] = useState<CarModel | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
-
     const [filteredCars, setFilteredCars] = useState<CarModel[]>([]);
 
+    const refreshFavoriteCars = async () => {
+        try {
+            const value = await AsyncStorage.getItem('FavoriteCars');
+            const cars = value ? JSON.parse(value) : [];
+            setFavoriteCars(cars);
+            console.log('Updated favorite cars:', cars); // Log all cars
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
-    // const toggleHeart = async (selectedCar: CarModel) => {
-    //     selectedCar.Heart = !selectedCar.Heart;
-    //     favoriteCars.map((car) =>
-    //         car.id === selectedCar.id
-    //             ? { ...car, Heart: selectedCar.Heart }
-    //             : { ...car, Heart: car.Heart }
-    //     );
-
-    //     try {
-    //         const favoriteCars = await AsyncStorage.getItem("FavoriteCars");
-    //         let favoriteCarsArray: CarModel[] = favoriteCars ? JSON.parse(favoriteCars) : [];
-
-    //         if (selectedCar.Heart) {
-    //             if (!favoriteCarsArray.some((car) => car.id === selectedCar.id)) {
-    //                 favoriteCarsArray.push(selectedCar);
-    //             }
-    //         } else {
-    //             favoriteCarsArray = favoriteCarsArray.filter((car: CarModel) => car.id !== selectedCar.id);
-    //         }
-
-    //         await AsyncStorage.setItem("FavoriteCars", JSON.stringify(favoriteCarsArray));
-    //         refreshFavoriteCars(); // Refresh favorite cars list
-    //         setRefreshing(true); // Trigger refresh
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // };
+    useEffect(() => {
+        refreshFavoriteCars();
+    }, []);
 
     return (
         <View style={styles.paddingTop}>
@@ -61,39 +44,20 @@ export const FavoriteCars = () => {
                         setFilteredCars(filtered);
                     }}
                 />
-                {/* {searchTerm ? */}
-                    <FlatList
-                        data={favoriteCars}
-                        keyExtractor={(item) => item.id.toString()}
-                        refreshing={refreshing}
-                        onRefresh={() => refreshing}
-                        renderItem={({ item }) => (
-                            <Pressable
-                                style={styles.listItem}
-                                onPress={() => setSelectedCar(item)}
-                            >
-                                <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
-                            </Pressable>
-                        )}
-
-                    /> 
-                    {/* :
-                    <FlatList
-                        data={favoriteCars}
-                        keyExtractor={(item) => item.id.toString()}
-                        refreshing={refreshing}
-                        onRefresh={() => refresh}
-                        renderItem={({ item }) => (
-                            <Pressable
-                                style={styles.listItem}
-                                onPress={() => setSelectedCar(item)}
-                            >
-                                <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
-                            </Pressable>
-                        )}
-
-                    />
-                } */}
+                <FlatList
+                    data={searchTerm ? filteredCars : favoriteCars}
+                    keyExtractor={(item) => item.id.toString()}
+                    refreshing={refreshing}
+                    onRefresh={refreshFavoriteCars}
+                    renderItem={({ item }) => (
+                        <Pressable
+                            style={styles.listItem}
+                            onPress={() => setSelectedCar(item)}
+                        >
+                            <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
+                        </Pressable>
+                    )}
+                />
                 {selectedCar && (
                     <Modal
                         animationType="slide"
@@ -119,9 +83,6 @@ export const FavoriteCars = () => {
                                     Seating Capacity: {selectedCar.seating_capacity}
                                 </Text>
                                 <Pressable
-                                    // onPress={() => {
-                                    //     toggleHeart(selectedCar);
-                                    // }}
                                     style={styles.heartButton}
                                 >
                                     {selectedCar.Heart ? <AntDesign name="heart" size={24} color="red" /> :
@@ -136,7 +97,8 @@ export const FavoriteCars = () => {
                                 </Pressable>
                             </View>
                         </View>
-                    </Modal>)}
+                    </Modal>
+                )}
             </View>
         </View>
     )
