@@ -1,8 +1,7 @@
 import { Stack } from "expo-router";
-import { Text, View, StyleSheet } from "react-native";
-import { ShowCars } from "@/Components/ShowCars";
+import { Text, View } from "react-native";
 import { styles } from "@/styles/style";
-
+import { ShowCars } from "@/Components/ShowCars";
 
 const index = () => {
   return (
