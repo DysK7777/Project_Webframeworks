@@ -44,6 +44,7 @@ const addCar = () => {
         horsepower: 0,
         transmission: '',
         seating_capacity: 0,
+        Heart: false
     });
 
 
@@ -51,20 +52,36 @@ const addCar = () => {
         setCar({ ...car, [field]: value });
     };
     const handleSubmit = () => {
-        // Example validation
         if (!car.name || !car.type || !car.year) {
             Alert.alert('Validation Error', 'Please fill in all required fields');
             return;
         }
         const idNumber = carModels.length + 1;
-        setCar({...car,id:idNumber})
+
+        const inputCar = {
+            id: idNumber,
+            name: car.name,
+            brand_id: parseInt(car.brand_id.toString()),
+            type: car.type,
+            year: parseInt(car.year.toString()),
+            fuel_type: car.fuel_type,
+            top_speed_kmh: parseInt(car.top_speed_kmh.toString()),
+            acceleration_0_to_100_kmh: parseInt(car.acceleration_0_to_100_kmh.toString()),
+            horsepower: parseInt(car.horsepower.toString()),
+            transmission: car.transmission,
+            seating_capacity: parseInt(car.seating_capacity.toString()),
+
+        }
+        // Example validation
+        //setCar({ ...car, id: idNumber, Heart: false })
+        console.log(inputCar)
         fetch("https://sampleapis.assimilate.be/car/models", {
             method: "POST",
             headers: {
-                'Content-Type': 'application.json',
+                'Content-Type': 'application/json',
                 'authorization': "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4"
             },
-            body: JSON.stringify(car)
+            body: JSON.stringify(inputCar)
         }
         ).then((response) => response.json())
             .then((data) => {
@@ -97,6 +114,7 @@ const addCar = () => {
                     placeholder="Enter car name"
                     value={car.name}
                     onChangeText={(value) => handleInputChange('name', value)}
+
                 />
 
                 <Text style={styles.label}>Brand ID</Text>
@@ -135,6 +153,7 @@ const addCar = () => {
                 <TextInput
                     style={styles.input}
                     placeholder="Enter top speed"
+                    keyboardType="numeric"
                     value={car.top_speed_kmh.toString()}
                     onChangeText={(value) => handleInputChange('top_speed_kmh', value)}
                 />

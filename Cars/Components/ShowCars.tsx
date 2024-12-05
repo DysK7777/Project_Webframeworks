@@ -14,8 +14,8 @@ export const ShowCars = () => {
     const [selectedCar, setSelectedCar] = useState<CarModel | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [refreshing, setRefreshing] = useState<boolean>(false);
-    
-    
+
+
     useEffect(() => {
         setLoading(true)
         // Fetch the car models data
@@ -23,7 +23,7 @@ export const ShowCars = () => {
         const baseURL = "https://sampleapis.assimilate.be/car/models";
         const fetchCarModels = async () => {
             try {
-                const response = await fetch(`${baseURL}?name.first=Bender`, {headers});
+                const response = await fetch(`${baseURL}?name.first=Bender`, { headers });
                 const data: CarModel[] = await response.json();
                 data.forEach(car => {
                     if (car.Heart == undefined)
@@ -40,8 +40,8 @@ export const ShowCars = () => {
 
         fetchCarModels();
         setLoading(false)
-    },[refreshing]);
-    const refresh = async() => {
+    }, [refreshing]);
+    const refresh = async () => {
         setRefreshing(true);
         // wait 2 seconds to simulate API call (or whatever)
         await new Promise((resolve, reject) => setTimeout(resolve, 2000));
@@ -57,11 +57,7 @@ export const ShowCars = () => {
             )
         );
     }
-    const changedSearch: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-        setSearchTerm(e.target.value);
-        setFilteredCars(carModels.filter((car) => car.name.toLowerCase().includes(searchTerm.toLowerCase())));
-        console.log(filteredCars)
-    }
+    
     //...prev, { car, liked: true }
     return (
         <View style={styles.paddingTop}
@@ -72,7 +68,13 @@ export const ShowCars = () => {
                 <TextInput
                     style={styles.input}
                     placeholder="Audi.."
-                    onChangeText={() => changedSearch}
+                    onChangeText={(text) => {
+                        setSearchTerm(text);
+                        const filtered = carModels.filter((car) =>
+                            car.name.toLowerCase().includes(text.toLowerCase())
+                        );
+                        setFilteredCars(filtered);
+                    }}
                 />
 
                 {searchTerm != '' ?
@@ -80,7 +82,7 @@ export const ShowCars = () => {
                         data={filteredCars}
                         keyExtractor={(item) => item.id.toString()}
                         refreshing={refreshing}
-                        onRefresh={()=>refresh}
+                        onRefresh={() => refresh}
                         renderItem={({ item }) => (
                             <Pressable
                                 style={styles.listItem}
@@ -96,7 +98,7 @@ export const ShowCars = () => {
                         data={carModels}
                         keyExtractor={(item) => item.id.toString()}
                         refreshing={refreshing}
-                        onRefresh={()=>refresh}
+                        onRefresh={() => refresh}
                         renderItem={({ item }) => (
                             <Pressable
                                 style={styles.listItem}

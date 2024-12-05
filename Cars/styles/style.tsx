@@ -30,7 +30,8 @@ export const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     paddingTop: {
-        marginTop: 50
+        marginTop: 50,
+        marginBottom: 120
     },
     carModels: {
         marginTop: 50,
