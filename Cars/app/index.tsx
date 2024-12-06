@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { Text, View } from "react-native";
 import { styles } from "@/styles/style";
 import { ShowCars } from "@/Components/ShowCars";
+import React from "react";
 
 const index = () => {
   return (

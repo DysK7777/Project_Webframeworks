@@ -26,7 +26,7 @@ const RootLayout = () => {
         options={{
           headerShown: false,
           title: 'Add a car',
-          tabBarIcon: ({focused,color}) => (
+          tabBarIcon: ({ focused, color }) => (
             <Ionicons name="car-outline"
               size={24}
               color={focused ? 'black' : 'grey'}
@@ -39,10 +39,23 @@ const RootLayout = () => {
         options={{
           headerShown: false,
           title: 'My cars',
-          tabBarIcon: ({focused,color}) => (
-          <Entypo name="star-outlined" 
-            size={24} 
-            color={focused ? 'black' : 'grey'}
+          tabBarIcon: ({ focused, color }) => (
+            <Entypo name="star-outlined"
+              size={24}
+              color={focused ? 'black' : 'grey'}
+            />)
+        }}
+      />
+      <Tabs.Screen
+        // Name of the dynamic route.
+        name="profileCars"
+        options={{
+          headerShown: false,
+          title: 'Profile',
+          tabBarIcon: ({ focused, color }) => (
+            <AntDesign name="user"
+              size={24}
+              color={focused ? 'black' : 'grey'}
             />)
         }}
       />

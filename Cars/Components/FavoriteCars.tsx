@@ -4,6 +4,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, View, Text, TextInput, Modal } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
 
 export const FavoriteCars = () => {
     const [favoriteCars, setFavoriteCars] = useState<CarModel[]>([]);

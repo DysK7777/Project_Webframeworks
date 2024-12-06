@@ -1,6 +1,7 @@
 import { styles } from "@/styles/style";
 import { CarModel } from "@/types";
 import { Stack } from "expo-router";
+import React from "react";
 import { useEffect, useState } from "react";
 import { Alert, Button, ScrollView, Text, TextInput, View } from "react-native";
 
