@@ -19,7 +19,6 @@ export const ShowCars = () => {
         try {
             const value = await AsyncStorage.getItem('FavoriteCars');
             const cars = value ? JSON.parse(value) : [];
-            console.log('Updated favorite cars:', cars); // Log all cars
         } catch (e) {
             console.error(e);
         }
@@ -58,13 +57,11 @@ export const ShowCars = () => {
         };
 
         fetchCarModels();
-        setLoading(false);
     }, [refreshing]);
 
     const refresh = async () => {
         setRefreshing(true);
-        // wait 2 seconds to simulate API call (or whatever)
-        await new Promise((resolve, reject) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         setRefreshing(false);
     }
 
@@ -85,11 +82,11 @@ export const ShowCars = () => {
             if (selectedCar.Heart) {
                 if (!favoriteCarsArray.some((car) => car.id === selectedCar.id)) {
                     favoriteCarsArray.push(selectedCar);
-                    console.log('Favorite cars after adding:', favoriteCarsArray); // Debug log
+                    //console.log('Favorite cars after adding:', favoriteCarsArray); // Debug log
                 }
             } else {
                 favoriteCarsArray = favoriteCarsArray.filter((car: CarModel) => car.id !== selectedCar.id);
-                console.log('Favorite cars after removing:', favoriteCarsArray); // Debug log
+                // console.log('Favorite cars after removing:', favoriteCarsArray); // Debug log
             }
 
             await AsyncStorage.setItem("FavoriteCars", JSON.stringify(favoriteCarsArray));

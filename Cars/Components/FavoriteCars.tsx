@@ -18,7 +18,24 @@ export const FavoriteCars = () => {
             const value = await AsyncStorage.getItem('FavoriteCars');
             const cars = value ? JSON.parse(value) : [];
             setFavoriteCars(cars);
-            console.log('Updated favorite cars:', cars); // Log all cars
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const toggleHeartStatus = async (car: CarModel) => {
+        try {
+            let updatedCars;
+            if (car.Heart) {
+                updatedCars = favoriteCars.filter((c) => c.id !== car.id);
+            } else {
+                updatedCars = favoriteCars.map((c) =>
+                    c.id === car.id ? { ...c, Heart: !c.Heart } : c
+                );
+            }
+            setFavoriteCars(updatedCars);
+            setSelectedCar({ ...car, Heart: !car.Heart });
+            await AsyncStorage.setItem('FavoriteCars', JSON.stringify(updatedCars));
         } catch (e) {
             console.error(e);
         }
@@ -84,6 +101,7 @@ export const FavoriteCars = () => {
                                 </Text>
                                 <Pressable
                                     style={styles.heartButton}
+                                    onPress={() => toggleHeartStatus(selectedCar)}
                                 >
                                     {selectedCar.Heart ? <AntDesign name="heart" size={24} color="red" /> :
                                         <AntDesign name="hearto" size={24} color="black" />
