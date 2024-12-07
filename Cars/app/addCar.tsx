@@ -4,13 +4,13 @@ import { Stack } from "expo-router";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Alert, Button, ScrollView, Text, TextInput, View } from "react-native";
+import { Picker } from '@react-native-picker/picker';
 
 const addCar = () => {
     const [carModels, setCarModels] = useState<CarModel[]>([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         setLoading(true)
-        // Fetch the car models data
         const headers = { 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4' };
         const baseURL = "https://sampleapis.assimilate.be/car/models";
         const fetchCarModels = async () => {
@@ -27,7 +27,6 @@ const addCar = () => {
             } finally {
                 setLoading(false);
             }
-            //await AsyncStorage.setItem("FavoriteCars",)
         };
 
         fetchCarModels();
@@ -49,7 +48,7 @@ const addCar = () => {
     });
 
 
-    const handleInputChange = (field: string, value: string) => {
+    const handleInputChange = (field: string, value: string | number) => {
         setCar({ ...car, [field]: value });
     };
     const handleSubmit = () => {
@@ -62,7 +61,7 @@ const addCar = () => {
         const inputCar = {
             id: idNumber,
             name: car.name,
-            brand_id: parseInt(car.brand_id.toString()),
+            brand_id: car.brand_id,
             type: car.type,
             year: parseInt(car.year.toString()),
             fuel_type: car.fuel_type,
@@ -73,8 +72,6 @@ const addCar = () => {
             seating_capacity: parseInt(car.seating_capacity.toString()),
 
         }
-        // Example validation
-        //setCar({ ...car, id: idNumber, Heart: false })
         console.log(inputCar)
         fetch("https://sampleapis.assimilate.be/car/models", {
             method: "POST",
@@ -88,7 +85,21 @@ const addCar = () => {
             .then((data) => {
                 setCarModels([...carModels, car])
                 Alert.alert('Car Saved', `${car.name} (${car.year})`);
-                console.log(data)
+                // Reset all fields to empty
+                setCar({
+                    id: 0,
+                    name: '',
+                    brand_id: 0,
+                    type: '',
+                    year: 0,
+                    fuel_type: '',
+                    top_speed_kmh: 0,
+                    acceleration_0_to_100_kmh: 0,
+                    horsepower: 0,
+                    transmission: '',
+                    seating_capacity: 0,
+                    Heart: false
+                });
             })
             .catch((error) => {
                 console.error(error);
@@ -101,14 +112,13 @@ const addCar = () => {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
+                paddingHorizontal: 10, // Add padding to make the container smaller
             }}
         >
             <Stack.Screen options={{ title: "Add a car" }}></Stack.Screen>
             <Text style={styles.stickyText}>Feel free to add your own car model</Text>
             <Text style={styles.carModels}>Enter Car Details</Text>
-            <ScrollView contentContainerStyle={styles.container}>
-
-
+            <ScrollView contentContainerStyle={{ ...styles.container, padding: 10 }}> // Adjust padding
                 <Text style={styles.label}>Name *</Text>
                 <TextInput
                     style={styles.input}
@@ -127,12 +137,18 @@ const addCar = () => {
                 />
 
                 <Text style={styles.label}>Type *</Text>
-                <TextInput
+                <Picker
+                    selectedValue={car.type}
                     style={styles.input}
-                    placeholder="Enter car type"
-                    value={car.type}
-                    onChangeText={(value) => handleInputChange('type', value)}
-                />
+                    onValueChange={(value) => handleInputChange('type', value)}
+                >
+                    <Picker.Item label="SUV" value="SUV" />
+                    <Picker.Item label="Coupe" value="Coupe" />
+                    <Picker.Item label="Sedan" value="Sedan" />
+                    <Picker.Item label="Pickup" value="Pickup" />
+                    <Picker.Item label="Sports" value="Sports" />
+                    <Picker.Item label="Hatchback" value="Hatchback" />
+                </Picker>
 
                 <Text style={styles.label}>Year *</Text>
                 <TextInput
@@ -143,18 +159,20 @@ const addCar = () => {
                 />
 
                 <Text style={styles.label}>Fuel Type</Text>
-                <TextInput
+                <Picker
+                    selectedValue={car.fuel_type}
                     style={styles.input}
-                    placeholder="Enter fuel type"
-                    value={car.fuel_type}
-                    onChangeText={(value) => handleInputChange('fuel_type', value)}
-                />
+                    onValueChange={(value) => handleInputChange('fuel_type', value)}
+                >
+                    <Picker.Item label="Petrol" value="Petrol" />
+                    <Picker.Item label="Diesel" value="Diesel" />
+                    <Picker.Item label="LPG" value="LPG" />
+                </Picker>
 
                 <Text style={styles.label}>Top Speed (km/h)</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Enter top speed"
-                    keyboardType="numeric"
                     value={car.top_speed_kmh.toString()}
                     onChangeText={(value) => handleInputChange('top_speed_kmh', value)}
                 />
@@ -176,12 +194,14 @@ const addCar = () => {
                 />
 
                 <Text style={styles.label}>Transmission</Text>
-                <TextInput
+                <Picker
+                    selectedValue={car.transmission}
                     style={styles.input}
-                    placeholder="Enter transmission type"
-                    value={car.transmission}
-                    onChangeText={(value) => handleInputChange('transmission', value)}
-                />
+                    onValueChange={(value) => handleInputChange('transmission', value)}
+                >
+                    <Picker.Item label="Automatic" value="Automatic" />
+                    <Picker.Item label="Clutch" value="Clutch" />
+                </Picker>
 
                 <Text style={styles.label}>Seating Capacity</Text>
                 <TextInput

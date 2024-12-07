@@ -1,6 +1,6 @@
 import { styles } from "@/styles/style";
 import { Stack } from "expo-router";
-import { View, Text, Pressable, Image } from "react-native";
+import { View, Text, Pressable, Image, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import React from "react";
 import * as ImagePicker from 'expo-image-picker';
@@ -53,38 +53,40 @@ const profileCars = () => {
     }, []);
 
     return (
-        <View style={styles.profilePageContainer}>
-            <Stack.Screen options={{ title: "Profile" }}></Stack.Screen>
-            <Text style={styles.stickyText}>Profile</Text>
-            <View style={styles.profileImageContainer}>
-                {image && <Image source={{ uri: image }} style={styles.profileImage} />}
-                <Pressable onPress={pickImage} style={styles.button}>
-                    <Text style={styles.buttonText}>Choose Picture</Text>
-                </Pressable>
+            <View style={styles.profilePageContainer}>
+                <Stack.Screen options={{ title: "Profile" }}></Stack.Screen>
+                <Text style={styles.stickyText}>Profile</Text>
+                    <View style={styles.profileImageContainer}>
+                        {image && <Image source={{ uri: image }} style={styles.profileImage} />}
+                        <Pressable onPress={pickImage} style={styles.button}>
+                            <Text style={styles.buttonText}>Choose Picture</Text>
+                        </Pressable>
+                    </View>
+                    {location && (
+                        <View style={styles.mapContainer}>
+                            <MapView
+                                style={{ flex: 1 }}
+                                initialRegion={{
+                                    latitude: location.coords.latitude,
+                                    longitude: location.coords.longitude,
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421,
+                                }}
+                            >
+                                <Marker
+                                    coordinate={{
+                                        latitude: location.coords.latitude,
+                                        longitude: location.coords.longitude,
+                                    }}
+                                    title="Your Location"
+                                />
+                            </MapView>
+                        </View>
+
+                    )}
             </View>
-            {location && (
-                <View style={styles.mapContainer}>
-                    <MapView
-                        style={{ flex: 1 }}
-                        initialRegion={{
-                            latitude: location.coords.latitude,
-                            longitude: location.coords.longitude,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        }}
-                    >
-                        <Marker
-                            coordinate={{
-                                latitude: location.coords.latitude,
-                                longitude: location.coords.longitude,
-                            }}
-                            title="Your Location"
-                        />
-                    </MapView>
-                </View>
-            )}
-        </View>
-    );
+
+            );
 }
 
-export default profileCars;
+            export default profileCars;

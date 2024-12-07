@@ -62,7 +62,6 @@ export const ShowCars = () => {
 
     const refresh = async () => {
         setRefreshing(true);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
         setRefreshing(false);
     }
 
