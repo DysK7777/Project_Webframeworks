@@ -29,6 +29,16 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: '#fff',
     },
+    deleteButton: {
+        padding: 1,
+        borderRadius: 5,
+        marginRight: 0,
+    },
+    carInfo: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
     paddingTop: {
         marginTop: 50,
         marginBottom: 120

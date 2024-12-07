@@ -52,16 +52,16 @@ const addCar = () => {
         setCar({ ...car, [field]: value });
     };
     const handleSubmit = () => {
-        if (!car.name || !car.type || !car.year) {
+        if (!car.name || !car.year) {
             Alert.alert('Validation Error', 'Please fill in all required fields');
             return;
         }
-        const idNumber = carModels.length + 1;
+        const idNumber = carModels.length + 2;
 
         const inputCar = {
             id: idNumber,
             name: car.name,
-            brand_id: car.brand_id,
+            brand_id: parseInt(car.brand_id.toString()),
             type: car.type,
             year: parseInt(car.year.toString()),
             fuel_type: car.fuel_type,
@@ -70,7 +70,7 @@ const addCar = () => {
             horsepower: parseInt(car.horsepower.toString()),
             transmission: car.transmission,
             seating_capacity: parseInt(car.seating_capacity.toString()),
-
+            Heart: false
         }
         console.log(inputCar)
         fetch("https://sampleapis.assimilate.be/car/models", {
@@ -80,8 +80,13 @@ const addCar = () => {
                 'authorization': "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4"
             },
             body: JSON.stringify(inputCar)
-        }
-        ).then((response) => response.json())
+        })
+            .then((response) => {
+                return response.json().catch((error) => {
+                    console.error('JSON parse error:', error);
+                    throw new Error('Failed to parse JSON response');
+                });
+            })
             .then((data) => {
                 setCarModels([...carModels, car])
                 Alert.alert('Car Saved', `${car.name} (${car.year})`);
@@ -103,6 +108,7 @@ const addCar = () => {
             })
             .catch((error) => {
                 console.error(error);
+                Alert.alert('Error', error.message);
             })
     };
     return (
@@ -118,7 +124,7 @@ const addCar = () => {
             <Stack.Screen options={{ title: "Add a car" }}></Stack.Screen>
             <Text style={styles.stickyText}>Feel free to add your own car model</Text>
             <Text style={styles.carModels}>Enter Car Details</Text>
-            <ScrollView contentContainerStyle={{ ...styles.container, padding: 10 }}> // Adjust padding
+            <ScrollView contentContainerStyle={{ ...styles.container, padding: 10 }}>
                 <Text style={styles.label}>Name *</Text>
                 <TextInput
                     style={styles.input}

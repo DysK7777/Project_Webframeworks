@@ -53,40 +53,40 @@ const profileCars = () => {
     }, []);
 
     return (
-            <View style={styles.profilePageContainer}>
-                <Stack.Screen options={{ title: "Profile" }}></Stack.Screen>
-                <Text style={styles.stickyText}>Profile</Text>
-                    <View style={styles.profileImageContainer}>
-                        {image && <Image source={{ uri: image }} style={styles.profileImage} />}
-                        <Pressable onPress={pickImage} style={styles.button}>
-                            <Text style={styles.buttonText}>Choose Picture</Text>
-                        </Pressable>
-                    </View>
-                    {location && (
-                        <View style={styles.mapContainer}>
-                            <MapView
-                                style={{ flex: 1 }}
-                                initialRegion={{
+        <View style={styles.profilePageContainer}>
+            <Stack.Screen options={{ title: "Profile" }}></Stack.Screen>
+            <Text style={styles.stickyText}>Profile</Text>
+            <ScrollView>
+                <View style={styles.profileImageContainer}>
+                    {image && <Image source={{ uri: image }} style={styles.profileImage} />}
+                    <Pressable onPress={pickImage} style={styles.button}>
+                        <Text style={styles.buttonText}>Choose Picture</Text>
+                    </Pressable>
+                </View>
+                {location && (
+                    <View style={styles.mapContainer}>
+                        <MapView
+                            style={{ flex: 1 }}
+                            initialRegion={{
+                                latitude: location.coords.latitude,
+                                longitude: location.coords.longitude,
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
+                            }}
+                        >
+                            <Marker
+                                coordinate={{
                                     latitude: location.coords.latitude,
                                     longitude: location.coords.longitude,
-                                    latitudeDelta: 0.0922,
-                                    longitudeDelta: 0.0421,
                                 }}
-                            >
-                                <Marker
-                                    coordinate={{
-                                        latitude: location.coords.latitude,
-                                        longitude: location.coords.longitude,
-                                    }}
-                                    title="Your Location"
-                                />
-                            </MapView>
-                        </View>
-
-                    )}
-            </View>
-
-            );
+                                title="Your Location"
+                            />
+                        </MapView>
+                    </View>
+                )}
+            </ScrollView>
+        </View>
+    );
 }
 
-            export default profileCars;
+export default profileCars;

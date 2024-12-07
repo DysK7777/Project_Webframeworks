@@ -96,7 +96,22 @@ export const ShowCars = () => {
             console.error(e);
         }
     }
-
+    const deleteCar = async (carId: number) => {
+        try {
+            const headers = { 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4' };
+            const response = await fetch(`https://sampleapis.assimilate.be/car/models/${carId}`, {
+                method: 'DELETE',
+                headers
+            });
+            if (response.ok) {
+                setCarModels(carModels.filter(car => car.id !== carId));
+            } else {
+                console.error('Failed to delete the car');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
     return (
         <View style={styles.paddingTop}
         >
@@ -128,14 +143,17 @@ export const ShowCars = () => {
                         refreshing={refreshing}
                         onRefresh={refresh}
                         renderItem={({ item }) => (
-                            <Pressable
-                                style={styles.listItem}
-                                onPress={() => setSelectedCar(item)}
-                            >
-                                <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
-                            </Pressable>
+                            <View style={styles.listItem}>
+                                <View style={styles.carInfo}>
+                                    <Pressable onPress={() => setSelectedCar(item)}>
+                                        <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => deleteCar(item.id)} style={styles.deleteButton}>
+                                        <AntDesign name="delete" size={24} color="black" />
+                                    </Pressable>
+                                </View>
+                            </View>
                         )}
-
                     />
                     :
                     <FlatList
@@ -144,14 +162,17 @@ export const ShowCars = () => {
                         refreshing={refreshing}
                         onRefresh={refresh}
                         renderItem={({ item }) => (
-                            <Pressable
-                                style={styles.listItem}
-                                onPress={() => setSelectedCar(item)}
-                            >
-                                <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
-                            </Pressable>
+                            <View style={styles.listItem}>
+                                <View style={styles.carInfo}>
+                                    <Pressable onPress={() => setSelectedCar(item)}>
+                                        <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => deleteCar(item.id)} style={styles.deleteButton}>
+                                        <AntDesign name="delete" size={24} color="black" />
+                                    </Pressable>
+                                </View>
+                            </View>
                         )}
-
                     />}
 
 
