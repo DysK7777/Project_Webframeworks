@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { View, Text, FlatList, Pressable, Modal, TextInput, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
+import Feather from '@expo/vector-icons/Feather';
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4
 export const ShowCars = () => {
     // const { favoriteCars, setFavoriteCars, refreshFavoriteCars } = useContext(FavoriteCarsContext);
@@ -138,11 +139,12 @@ export const ShowCars = () => {
         >
 
             {loading && <Text>Chill, give me a break!</Text>}
-            <Text style={styles.carModels}>Car Models</Text>
-            <View>
+            <Text style={styles.carModels && {marginTop:150,fontWeight: "bold",fontSize: 20 }}>Car Models</Text>
+            <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.input}
                     placeholder="Audi.."
+                    value={searchTerm}
                     onChangeText={(text) => {
                         setSearchTerm(text);
                         const filtered = carModels.filter((car) =>
@@ -151,52 +153,29 @@ export const ShowCars = () => {
                         setFilteredCars(filtered);
                     }}
                 />
-                {/* <Pressable
-                style={styles.closeButton}
-                onPress={clearStorage}
-            >
-                <Text style={styles.buttonText}>Clear Storage</Text>
-            </Pressable> */}
-                {searchTerm != '' ?
-                    <FlatList
-                        data={filteredCars}
-                        keyExtractor={(item) => item.id.toString()}
-                        refreshing={refreshing}
-                        onRefresh={refresh}
-                        renderItem={({ item }) => (
-                            <View style={styles.listItem}>
-                                <View style={styles.carInfo}>
-                                    <Pressable onPress={() => setSelectedCar(item)}>
-                                        <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
-                                    </Pressable>
-                                    <Pressable onPress={() => deleteCar(item.id)} style={styles.deleteButton}>
-                                        <AntDesign name="delete" size={24} color="black" />
-                                    </Pressable>
-                                </View>
+                <Pressable onPress={() => setSearchTerm('')} style={styles.clearButton}>
+                    <Feather name="x-circle" size={24} color="black" />
+                </Pressable>
+            </View>
+            <View>
+                <FlatList
+                    data={searchTerm? filteredCars: carModels}
+                    keyExtractor={(item) => item.id.toString()}
+                    refreshing={refreshing}
+                    onRefresh={refresh}
+                    renderItem={({ item }) => (
+                        <View style={styles.listItem}>
+                            <View style={styles.carInfo}>
+                                <Pressable onPress={() => setSelectedCar(item)}>
+                                    <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
+                                </Pressable>
+                                <Pressable onPress={() => deleteCar(item.id)} style={styles.deleteButton}>
+                                    <AntDesign name="delete" size={24} color="black" />
+                                </Pressable>
                             </View>
-                        )}
-                    />
-                    :
-                    <FlatList
-                        data={carModels}
-                        keyExtractor={(item) => item.id.toString()}
-                        refreshing={refreshing}
-                        onRefresh={refresh}
-                        renderItem={({ item }) => (
-                            <View style={styles.listItem}>
-                                <View style={styles.carInfo}>
-                                    <Pressable onPress={() => setSelectedCar(item)}>
-                                        <Text style={styles.carName}>{`${item.name} (${item.year})`}</Text>
-                                    </Pressable>
-                                    <Pressable onPress={() => deleteCar(item.id)} style={styles.deleteButton}>
-                                        <AntDesign name="delete" size={24} color="black" />
-                                    </Pressable>
-                                </View>
-                            </View>
-                        )}
-                    />}
-
-
+                        </View>
+                    )}
+                />
             </View>
 
 

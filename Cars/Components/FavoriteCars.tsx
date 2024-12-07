@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FlatList, Pressable, View, Text, TextInput, Modal } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
+import Feather from "@expo/vector-icons/Feather";
 
 export const FavoriteCars = () => {
     const [favoriteCars, setFavoriteCars] = useState<CarModel[]>([]);
@@ -51,9 +52,11 @@ export const FavoriteCars = () => {
             {loading && <Text>Chill, give me a break!</Text>}
             <Text style={styles.carModels}>Lovely cars</Text>
             <View>
+            <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.input}
                     placeholder="Audi.."
+                    value={searchTerm}
                     onChangeText={(text) => {
                         setSearchTerm(text);
                         const filtered = favoriteCars.filter((car) =>
@@ -62,6 +65,10 @@ export const FavoriteCars = () => {
                         setFilteredCars(filtered);
                     }}
                 />
+                <Pressable onPress={() => setSearchTerm('')} style={styles.clearButton}>
+                    <Feather name="x-circle" size={24} color="black" />
+                </Pressable>
+            </View>
                 <FlatList
                     data={searchTerm ? filteredCars : favoriteCars}
                     keyExtractor={(item) => item.id.toString()}

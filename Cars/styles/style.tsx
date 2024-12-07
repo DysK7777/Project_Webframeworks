@@ -178,4 +178,11 @@ export const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: 'grey',
     },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    clearButton: {
+        marginLeft: 10,
+    },
 });
