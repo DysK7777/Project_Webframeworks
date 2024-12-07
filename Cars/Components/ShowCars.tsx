@@ -1,8 +1,8 @@
 import { styles } from "@/styles/style";
 import { CarModel } from "@/types";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useState, useEffect, useContext } from "react";
-import { View, Text, FlatList, Pressable, Modal, StyleSheet, TextInput } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, FlatList, Pressable, Modal, TextInput, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4
@@ -62,7 +62,24 @@ export const ShowCars = () => {
 
     const refresh = async () => {
         setRefreshing(true);
-        setRefreshing(false);
+        const headers = { 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxNDA0NTlAYXAuYmUiLCJpYXQiOjE3MzI0MDMxMTJ9.CNlshZOvpH-nK9ykEF7Ol_HsQlQhz8cjVwxENRIlpz4' };
+        const baseURL = "https://sampleapis.assimilate.be/car/models";
+        try {
+            const response = await fetch(`${baseURL}?name.first=Bender`, { headers });
+            const data: CarModel[] = await response.json();
+            const favoriteCars = await AsyncStorage.getItem("FavoriteCars");
+            const favoriteCarsArray: CarModel[] = favoriteCars ? JSON.parse(favoriteCars) : [];
+
+            data.forEach(car => {
+                car.Heart = favoriteCarsArray.some(favCar => favCar.id === car.id);
+            });
+
+            setCarModels(data);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setRefreshing(false);
+        }
     }
 
     const pressLiked = async (selectedCar: CarModel) => {
@@ -104,7 +121,11 @@ export const ShowCars = () => {
                 headers
             });
             if (response.ok) {
+                const deletedCar = carModels.find(car => car.id === carId);
                 setCarModels(carModels.filter(car => car.id !== carId));
+                if (deletedCar) {
+                    Alert.alert('Car Deleted', `${deletedCar.name} (${deletedCar.year}) has been deleted.`);
+                }
             } else {
                 console.error('Failed to delete the car');
             }

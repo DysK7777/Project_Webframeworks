@@ -142,7 +142,7 @@ const addCar = () => {
                     onChangeText={(value) => handleInputChange('brand_id', value)}
                 />
 
-                <Text style={styles.label}>Type *</Text>
+                <Text style={styles.label}>Type</Text>
                 <Picker
                     selectedValue={car.type}
                     style={styles.input}

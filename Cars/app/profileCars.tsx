@@ -56,7 +56,6 @@ const profileCars = () => {
         <View style={styles.profilePageContainer}>
             <Stack.Screen options={{ title: "Profile" }}></Stack.Screen>
             <Text style={styles.stickyText}>Profile</Text>
-            <ScrollView>
                 <View style={styles.profileImageContainer}>
                     {image && <Image source={{ uri: image }} style={styles.profileImage} />}
                     <Pressable onPress={pickImage} style={styles.button}>
@@ -84,7 +83,6 @@ const profileCars = () => {
                         </MapView>
                     </View>
                 )}
-            </ScrollView>
         </View>
     );
 }
