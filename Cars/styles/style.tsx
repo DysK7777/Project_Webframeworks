@@ -46,7 +46,8 @@ export const styles = StyleSheet.create({
     carModels: {
         marginTop: 50,
         fontWeight: "bold",
-        fontSize: 20
+        fontSize: 20,
+        position: 'fixed',
     },
 
     listItem: {

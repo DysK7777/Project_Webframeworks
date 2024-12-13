@@ -56,10 +56,10 @@ const addCar = () => {
             Alert.alert('Validation Error', 'Please fill in all required fields');
             return;
         }
-        const idNumber = carModels.length + 2;
 
-        const inputCar = {
-            id: idNumber,
+        const highestId = carModels.reduce((maxId, car) => Math.max(car.id, maxId), 0);
+        const inputCar = { 
+            id: highestId + 1,
             name: car.name,
             brand_id: parseInt(car.brand_id.toString()),
             type: car.type,

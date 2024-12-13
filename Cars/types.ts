@@ -12,3 +12,23 @@ export interface CarModel {
     seating_capacity: number;
     Heart?:Boolean
   }
+  export interface CarFlatlistProps {
+    refresh: () => Promise<void>
+    searchTerm: string
+    filteredCars: CarModel[]
+    carModels: CarModel[]
+    refreshing: boolean
+    setSelectedCar: (value: React.SetStateAction<CarModel | null>) => void
+    deleteCar?: (carId: number) => Promise<void>
+}
+export interface CarSearchProps {
+  searchTerm: string,
+  setSearchTerm: (value: React.SetStateAction<string>) => void,
+  carModels: CarModel[],
+  setFilteredCars: (value: React.SetStateAction<CarModel[]>) => void
+}
+export interface CarModelProps {
+    selectedCar: CarModel;
+    setSelectedCar:React.Dispatch<React.SetStateAction<CarModel | null>>
+    toggleHeartStatus:(car: CarModel) => Promise<void>
+}
